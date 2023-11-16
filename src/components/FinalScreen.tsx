@@ -19,8 +19,9 @@ export default function FinalScreen({
   return (
     <>
       <p className="result">
-        <span>🥇</span> fez <strong>{points}</strong> pontos de um máximo de{" "}
-        {MAX_POINTS} {`(${percentage}%)`}
+        <span>{points === highscore ? "🥇" : points === 0 ? "🤦‍♂️" : "✅"}</span>{" "}
+        fez <strong>{points}</strong> pontos de um máximo de {MAX_POINTS}{" "}
+        {`(${percentage}%)`}
       </p>
       <p className="highscore">Melhor pontuação: {highscore} pontos</p>
       <Button dispatch={dispatch} content="Reiniciar quiz" type="restart" />

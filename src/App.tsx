@@ -128,7 +128,7 @@ function App() {
         {answer !== null && (
           <Button
             dispatch={dispatch}
-            content="Próxima"
+            content={hasFinished ? "Finalizar" : "Próxima"}
             type={hasFinished ? "finished" : "nextQuestion"}
           />
         )}
