@@ -1,17 +1,20 @@
 interface ProgressProps {
   numQuestion: number;
   points: number;
-  progress: number;
+  answer: null | number;
 }
 
 export default function Progress({
   numQuestion,
   points,
-  progress,
+  answer,
 }: ProgressProps) {
   return (
     <header className="progress">
-      <progress max={15} value={progress}></progress>
+      <progress
+        max={15}
+        value={numQuestion + Number(answer !== null)}
+      ></progress>
       <p>
         Questão <strong>{numQuestion + 1}</strong>/15
       </p>

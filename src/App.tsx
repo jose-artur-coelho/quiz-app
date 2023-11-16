@@ -10,6 +10,8 @@ import Question from "./components/Question";
 import Button from "./components/Button";
 import FinalScreen from "./components/FinalScreen";
 import Progress from "./components/Progress";
+import Footer from "./components/Footer";
+import Timer from "./components/Timer";
 
 export interface QuestionObject {
   question: string;
@@ -25,7 +27,7 @@ interface AppState {
   answer: null | number;
   points: number;
   highscore: number;
-  progress: number;
+  secondsRemaining: number;
 }
 
 interface DataReceivedAction {
@@ -42,7 +44,7 @@ const initialState: AppState = {
   answer: null,
   points: 0,
   highscore: 0,
-  progress: 0,
+  secondsRemaining: 300,
 };
 
 function reducer(state: AppState, action: AppAction): AppState {
@@ -66,7 +68,6 @@ function reducer(state: AppState, action: AppAction): AppState {
           action.payLoad === question.correctOption
             ? state.points + question.points
             : state.points,
-        progress: state.progress + 1,
       };
     case "nextQuestion":
       return {
@@ -84,7 +85,15 @@ function reducer(state: AppState, action: AppAction): AppState {
           state.points > state.highscore ? state.points : state.highscore,
       };
     case "restart":
-      return { ...state, status: "ready", points: 0, index: 0 };
+      return {
+        ...state,
+        status: "ready",
+        points: 0,
+        index: 0,
+        secondsRemaining: 20,
+      };
+    case "tick":
+      return { ...state, secondsRemaining: state.secondsRemaining - 1 };
     default:
       return state;
   }
@@ -92,12 +101,9 @@ function reducer(state: AppState, action: AppAction): AppState {
 
 function App() {
   const [
-    { questions, status, index, answer, points, highscore, progress },
+    { questions, status, index, answer, points, highscore, secondsRemaining },
     dispatch,
   ]: [AppState, Dispatch<AppAction>] = useReducer(reducer, initialState);
-
-  const hasFinished = questions.length - 1 === index;
-  const numQuestions = questions.length;
 
   useEffect(function () {
     fetch("http://localhost:8000/questions")
@@ -105,6 +111,16 @@ function App() {
       .then((data) => dispatch({ type: "dataReceived", payLoad: data }))
       .catch(() => dispatch({ type: "dataFailed" }));
   }, []);
+
+  useEffect(
+    function () {
+      if (secondsRemaining === 0) dispatch({ type: "finished" });
+    },
+    [secondsRemaining]
+  );
+
+  const hasFinished = questions.length - 1 === index;
+  const numQuestions = questions.length;
 
   return (
     <div className="app">
@@ -117,7 +133,7 @@ function App() {
         )}
         {status === "active" && (
           <>
-            <Progress numQuestion={index} points={points} progress={progress} />
+            <Progress numQuestion={index} points={points} answer={answer} />
             <Question
               question={questions[index]}
               dispatch={dispatch}
@@ -125,12 +141,17 @@ function App() {
             />
           </>
         )}
-        {answer !== null && (
-          <Button
-            dispatch={dispatch}
-            content={hasFinished ? "Finalizar" : "Próxima"}
-            type={hasFinished ? "finished" : "nextQuestion"}
-          />
+        {status === "active" && (
+          <Footer>
+            <Timer dispatch={dispatch} seconds={secondsRemaining} />
+            {answer !== null && (
+              <Button
+                dispatch={dispatch}
+                content={hasFinished ? "Finalizar" : "Próxima"}
+                type={hasFinished ? "finished" : "nextQuestion"}
+              />
+            )}
+          </Footer>
         )}
         {status == "inactive" && (
           <FinalScreen
