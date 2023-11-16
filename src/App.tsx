@@ -9,6 +9,7 @@ import StartScreen from "./components/StartScreen";
 import Question from "./components/Question";
 import Button from "./components/Button";
 import FinalScreen from "./components/FinalScreen";
+import Progress from "./components/Progress";
 
 export interface QuestionObject {
   question: string;
@@ -24,6 +25,7 @@ interface AppState {
   answer: null | number;
   points: number;
   highscore: number;
+  progress: number;
 }
 
 interface DataReceivedAction {
@@ -40,6 +42,7 @@ const initialState: AppState = {
   answer: null,
   points: 0,
   highscore: 0,
+  progress: 0,
 };
 
 function reducer(state: AppState, action: AppAction): AppState {
@@ -63,12 +66,12 @@ function reducer(state: AppState, action: AppAction): AppState {
           action.payLoad === question.correctOption
             ? state.points + question.points
             : state.points,
+        progress: state.progress + 1,
       };
     case "nextQuestion":
       return {
         ...state,
 
-        status: "active",
         index: state.index + 1,
         answer: null,
       };
@@ -88,10 +91,10 @@ function reducer(state: AppState, action: AppAction): AppState {
 }
 
 function App() {
-  const [{ questions, status, index, answer, points, highscore }, dispatch]: [
-    AppState,
-    Dispatch<AppAction>
-  ] = useReducer(reducer, initialState);
+  const [
+    { questions, status, index, answer, points, highscore, progress },
+    dispatch,
+  ]: [AppState, Dispatch<AppAction>] = useReducer(reducer, initialState);
 
   const hasFinished = questions.length - 1 === index;
   const numQuestions = questions.length;
@@ -113,11 +116,14 @@ function App() {
           <StartScreen numQuestions={numQuestions} dispatch={dispatch} />
         )}
         {status === "active" && (
-          <Question
-            question={questions[index]}
-            dispatch={dispatch}
-            answer={answer}
-          />
+          <>
+            <Progress numQuestion={index} points={points} progress={progress} />
+            <Question
+              question={questions[index]}
+              dispatch={dispatch}
+              answer={answer}
+            />
+          </>
         )}
         {answer !== null && (
           <Button
