@@ -1,27 +1,7 @@
-# React + TypeScript + Vite
+# React Quiz
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Quiz desenvolvido na seção sobre useReducer do curso [The Ultimate React Course 2024: React, Redux & More](https://www.udemy.com/course/the-ultimate-react-course/).
 
-Currently, two official plugins are available:
+## Como jogar?
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+As perguntas estão em um arquivo json que é emulada como API do quiz. Para criar o servidor só usar o comando **run server** com seu gerenciador de pacotes (a porta usada inicialmente é a 8000, mas pode ser mudada no package.json). A partir daí, em outra aba do terminal só rodar um comando **dev** que o quiz será iniciado \o/.
